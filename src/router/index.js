@@ -25,7 +25,7 @@ const routes = [
   {
     path:"/airlines/:id",
     name: "editAirline",
-    component: () => import('../components/editAirline.vue'),
+    component: () => import('@/components/editAirline.vue'),
   },
   {
     path:"/passengers/:id",
