@@ -13,3 +13,9 @@ export default {
   },
 };
 </script>
+<style>
+body{
+  background: snow;
+
+}
+</style>
