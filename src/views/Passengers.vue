@@ -3,7 +3,7 @@
     <section v-if="errored">
       <p>Sorrry, something went wrong</p>
     </section>
-    <section class="md:flex flex-col" v-else>
+    <section class="flex flex-row justify-center" v-else>
       <div v-if="loading">Loading...</div>
       <div v-if="noPassengers">
         <p>No Passengers booked on this Airline</p>
@@ -13,29 +13,18 @@
         </a>
 
       </div>
-      <div v-else
-           v-for="passenger in passengers" v-bind:key="passenger._id">
-        <figure class="md:flex bg-gray-100 rounded-xl p-8 md:p-0 m-2">
-          <div class="pt-6 md:p-8 text-center md:text-left space-y-6">
-            <blockquote>
-              <h1 class="text-2xl font-bold">
-                {{ passenger.name }}
-              </h1>
-            </blockquote>
-            <figcaption class="font-medium flex-col ">
-              <div class="text-cyan-600">
-                {{ passenger.trips }}
-              </div>
-              <div class="text-gray-500 text-sm">
-                {{ passenger._id }}
-              </div>
-            </figcaption>
-            <router-link :to="{ path: '/airlines/' + passenger.id  }"
-                         class="bg-blue-500 text-center text-white p-2 rounded m-3.5">Edit
-            </router-link>
+      <div id="fun" class="flex flex-col sm:flex-row" v-else>
 
+        <div v-for="passenger in passengers" :key="passenger._id"
+             class="shadow-md flex flex-col flex-shrink-0 m-4">
+          <h2 class="py-2 px-5 text-center bg-gray-200 text-gray-600 mb-3">Passenger</h2>
+          <div class="p-4 flex flex-col items-end justify-center">
+            <h4 class="text-xs font-thin uppercase mb-2">Name of Passenger</h4>
+            <h5 class="text-xl font-semibold mb-2 text-blue-700">{{ passenger.name }}</h5>
+            <p class="text-cyan-600 text-xs text-gray-400">{{ passenger.trips }} Trips</p>
           </div>
-        </figure>
+        </div>
+
       </div>
     </section>
   </div>
@@ -53,30 +42,32 @@ export default {
       passengers: [],
       loading: true,
       errored: false,
-      noPassengers:false
-
+      noPassengers: false,
+      id: null
     }
   },
 
 
   mounted() {
-    let id = this.$route.params.id;
-    axios
-        .get('http://localhost/api/passengers/' + id)
-        .then(response => {
-          this.passengers = response.data
-        })
+    this.id = this.$route.params.id;
+    this.getPassengers()
+  },
+  methods:{
+    async getPassengers(){
+      try{
+        let response = await axios.get('http://localhost/api/passengers/' + this.id)
+        this.passengers = response.data
 
-        .catch(error => {
-          console.log(error)
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-          if (this.passengers.length === 0)
-            this.noPassengers = true
-        }
-        )
+      } catch(error)   {
+        console.log(error)
+        this.errored = true;
+      }  finally {
+        this.loading = false;
+        if (this.passengers.length === 0)
+          this.noPassengers = true
+
+      }
+    }
   }
 };
 </script>
